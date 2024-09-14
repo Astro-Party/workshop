@@ -4,51 +4,51 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/default.astro';
 
 export async function getStaticPaths() {
-  const holidays = await getCollection('holidays');
+	const holidays = await getCollection('holidays');
 
-  return holidays.map((holiday) => {
-    return {
-      params: { slug: holiday.slug },
-      props: {
-        holiday,
-        holidays,
-      }
-    }
-  })
-  return [
-    { params: { slug: '1' }, props: { title: 'Static 1' } },
-    { params: { slug: '2' }, props: { title: 'Static 2' } },
-    { params: { slug: '3' }, props: { title: 'Static 3' } },
-  ]
+	return holidays.map((holiday) => {
+		return {
+			params: { slug: holiday.slug },
+			props: {
+				holiday,
+				holidays,
+			},
+		};
+	});
+	return [
+		{ params: { slug: '1' }, props: { title: 'Static 1' } },
+		{ params: { slug: '2' }, props: { title: 'Static 2' } },
+		{ params: { slug: '3' }, props: { title: 'Static 3' } },
+	];
 }
 
 export interface Props {
-  holiday: CollectionEntry<'holidays'>,
-  holidays: Array<CollectionEntry<'holidays'>>
+	holiday: CollectionEntry<'holidays'>;
+	holidays: Array<CollectionEntry<'holidays'>>;
 }
 
 const { holiday, holidays } = Astro.props;
-const { Content } = await holiday.render()
+const { Content } = await holiday.render();
 ---
 
 <Layout title={holiday.data.title}>
-  <nav class="subnav flex">
-    <a href="/holidays">&larr; All holidays</a>
-    {holidays?.map((h) => (
-      <a href={`/holidays/${h.slug}`}>{h.data.title}</a>
-    ))}
-  </nav>
-  
-  <Image
-    src={holiday.data.image}
-    alt={holiday.data.title}
-    width="800"
-    height="500"
-    loading="eager"
-    transition:name={`holiday-img-${holiday.slug}`}
-  />
+	<nav class="subnav flex">
+		<a href="/holidays">&larr; All holidays</a>
+		{holidays?.map((h) => <a href={`/holidays/${h.slug}`}>{h.data.title}</a>)}
+	</nav>
 
-	<h1 transition:name={`holiday-title-${holiday.slug}`}>{holiday.data.title}</h1>
-  
-  <Content />
+	<Image
+		src={holiday.data.image}
+		alt={holiday.data.title}
+		width="800"
+		height="500"
+		loading="eager"
+		transition:name={`holiday-img-${holiday.slug}`}
+	/>
+
+	<h1 transition:name={`holiday-title-${holiday.slug}`}>
+		{holiday.data.title}
+	</h1>
+
+	<Content />
 </Layout>

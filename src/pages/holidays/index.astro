@@ -1,32 +1,35 @@
 ---
-import { getCollection } from "astro:content"
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/default.astro';
-import { Image } from "astro:assets";
+import { Image } from 'astro:assets';
 
 const holidays = await getCollection('holidays');
 ---
 
 <Layout title="Holidays">
-  <h1>Holidays</h1>
+	<h1>Holidays</h1>
 
-  <section class="holidays flex">
-    {holidays.map(async (holiday) => {
-      return (
-      <div class="box">
-        <Image
-          src={holiday.data.image}
-          alt={holiday.data.title}
-          width="800"
-          height="500"
-          transition:name={`holiday-img-${holiday.slug}`}
-        />
-        
-        <h2 transition:name={`holiday-title-${holiday.slug}`}>
-          <a href={`/holidays/${holiday.slug}`}>{holiday.data.title}</a>
-        </h2>
+	<section class="holidays flex">
+		{
+			holidays.map(async (holiday) => {
+				return (
+					<div class="box">
+						<Image
+							src={holiday.data.image}
+							alt={holiday.data.title}
+							width="800"
+							height="500"
+							transition:name={`holiday-img-${holiday.slug}`}
+						/>
 
-        <p>{holiday.data.tags.map((tag) => `#${tag}`).join(' ')}</p>
-      </div>
-    )})}
-  </section>
+						<h2 transition:name={`holiday-title-${holiday.slug}`}>
+							<a href={`/holidays/${holiday.slug}`}>{holiday.data.title}</a>
+						</h2>
+
+						<p>{holiday.data.tags.map((tag) => `#${tag}`).join(' ')}</p>
+					</div>
+				);
+			})
+		}
+	</section>
 </Layout>

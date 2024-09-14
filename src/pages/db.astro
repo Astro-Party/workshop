@@ -12,48 +12,43 @@ const badIdeas = ideas.filter((idea) => !idea.good);
 <Layout title={title}>
 	<h1>{title}</h1>
 
-  <section class="idea-form box">
-    <h2>Add an idea</h2>
+	<section class="idea-form box">
+		<h2>Add an idea</h2>
 
-    <form method="POST">
-      <label for="text">
-        Idea
-        <input type="text" name="text" id="text" required />
-      </label>
+		<form method="POST">
+			<label for="text">
+				Idea
+				<input type="text" name="text" id="text" required />
+			</label>
 
-      <fieldset>
-        <legend>Is this idea any good?</legend>
-        <label for="yes">
-          <input type="radio" name="good" id="yes" value="false" />
-          Yes
-        </label>
-        <label for="no">
-          <input type="radio" name="good" id="no" value="true" />
-          No
-        </label>
-      </fieldset>
+			<fieldset>
+				<legend>Is this idea any good?</legend>
+				<label for="yes">
+					<input type="radio" name="good" id="yes" value="false" />
+					Yes
+				</label>
+				<label for="no">
+					<input type="radio" name="good" id="no" value="true" />
+					No
+				</label>
+			</fieldset>
 
-      <button type="submit">Add</button>
-    </form>
-  </section>
+			<button type="submit">Add</button>
+		</form>
+	</section>
 
-  <section class="idea-lists flex">
-    <div class="box">
-      <h2>Good ideas</h2>
-      <ul class="list">
-        {goodIdeas.map((idea) => (
-          <li>{idea.text}</li>
-        ))}
-      </ul>
-    </div>
-    <div class="box">
-      <h2>Bad ideas</h2>
-      <ul class="list">
-        {badIdeas.map((idea) => (
-          <li>{idea.text}</li>
-        ))}
-      </ul>
-    </div>
-  </section>
+	<section class="idea-lists flex">
+		<div class="box">
+			<h2>Good ideas</h2>
+			<ul class="list">
+				{goodIdeas.map((idea) => <li>{idea.text}</li>)}
+			</ul>
+		</div>
+		<div class="box">
+			<h2>Bad ideas</h2>
+			<ul class="list">
+				{badIdeas.map((idea) => <li>{idea.text}</li>)}
+			</ul>
+		</div>
+	</section>
 </Layout>
-

@@ -1,0 +1,45 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/default.astro';
+
+export const prerender = false;
+
+const { pokemon } = Astro.params;
+
+const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
+
+if (!response.ok) {
+	throw new Error('failed to fetch Pokémon');
+}
+
+const pokemonData = await response.json();
+
+const backUrl = new URL(Astro.url);
+backUrl.pathname = '/pokemon';
+backUrl.searchParams.set(
+	'offset',
+	(Math.floor(pokemonData.id / 50) * 50).toString(),
+);
+
+const title = pokemonData.name;
+
+let imgUrl;
+const images = pokemonData.sprites;
+
+if (images.other?.['official-artwork']?.front_default) {
+	imgUrl = images.other['official-artwork'].front_default;
+} else if (images.other?.dream_world?.front_default) {
+	imgUrl = pokemonData.sprites.other.dream_world.front_default;
+} else {
+	imgUrl = pokemonData.sprites.front_default;
+}
+---
+
+<Layout title={title}>
+	<nav class="subnav flex">
+		<a href={backUrl}>&larr; All Pokémon</a>
+	</nav>
+
+	<Image src={imgUrl} alt={title} width="200" height="200" />
+	<h1>{title}</h1>
+</Layout>

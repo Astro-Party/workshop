@@ -1,0 +1,66 @@
+---
+import Layout from '../../layouts/default.astro';
+
+export const prerender = false;
+
+const offset = Astro.url.searchParams.get('offset') ?? '0';
+const apiUrl = new URL('https://pokeapi.co/api/v2/pokemon');
+apiUrl.searchParams.set('limit', '50');
+apiUrl.searchParams.set('offset', offset);
+
+const response = await fetch(apiUrl);
+
+if (!response.ok) {
+	throw new Error('failed to fetch Pokémon');
+}
+
+const title = 'Pokémon';
+const pokemonList = await response.json();
+
+const prevOffset =
+	Number(offset) > 0 ? Math.max(Number(offset) - 50, 0) : false;
+const nextOffset =
+	Number(offset) <= pokemonList.count - 1
+		? Math.min(Number(offset) + 50, Math.floor(pokemonList.count / 50) * 50)
+		: false;
+
+let prevUrl;
+let nextUrl;
+
+if (prevOffset !== false) {
+	prevUrl = new URL(Astro.url);
+	prevUrl.searchParams.set('offset', prevOffset.toString());
+}
+
+if (nextOffset !== false) {
+	nextUrl = new URL(Astro.url);
+	nextUrl.searchParams.set('offset', nextOffset.toString());
+}
+
+console.log({ prevOffset, nextOffset });
+---
+
+<Layout title={title}>
+	<h1>{title}</h1>
+
+	<section class="box">
+		<ul class="list flex">
+			{
+				pokemonList.results.map((pokemon: { name: string }) => {
+					return (
+						<li>
+							<a href={`/pokemon/${pokemon.name}`}>{pokemon.name}</a>
+						</li>
+					);
+				})
+			}
+		</ul>
+	</section>
+
+	<section>
+		<nav class="subnav flex">
+			{prevOffset !== false ? <a href={prevUrl}>&larr; previous page</a> : null}
+			{nextOffset !== false ? <a href={nextUrl}>next page &rarr;</a> : null}
+		</nav>
+	</section>
+</Layout>
