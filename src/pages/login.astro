@@ -1,0 +1,15 @@
+---
+import Layout from '../layouts/default.astro';
+
+export const prerender = false;
+
+const title = 'Log In';
+---
+
+<Layout title={title}>
+	<h1>{title}</h1>
+
+	<form action="/api/toggle-auth" method="POST">
+		<button type="submit">Log In</button>
+	</form>
+</Layout>
