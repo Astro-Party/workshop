@@ -5,7 +5,11 @@ export const collections = {
 		type: "content",
 		schema: z.object({
 			title: z.string(),
-			image: z.string().url(),
+			image: z.object({
+				src: z.string().url(),
+				alt: z.string(),
+				credit: z.string(),
+			}),
 			date: z.date(),
 			tags: z.array(z.string()),
 		}),

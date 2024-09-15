@@ -15,8 +15,8 @@ const holidays = await getCollection('holidays');
 				return (
 					<div class="box">
 						<Image
-							src={holiday.data.image}
-							alt={holiday.data.title}
+							src={holiday.data.image.src}
+							alt={holiday.data.image.alt}
 							width="800"
 							height="500"
 							transition:name={`holiday-img-${holiday.slug}`}

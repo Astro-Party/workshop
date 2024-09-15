@@ -1,0 +1,97 @@
+---
+import { actions } from 'astro:actions';
+import { db, Idea } from 'astro:db';
+import Layout from '../layouts/default.astro';
+
+export const prerender = false;
+
+const title = 'Astro DB';
+
+const ideas = await db.select().from(Idea);
+const goodIdeas = ideas.filter((idea) => idea.good);
+const badIdeas = ideas.filter((idea) => !idea.good);
+
+const result = Astro.getActionResult(actions.ideas.save);
+---
+
+<Layout title={title}>
+	<h1>{title}</h1>
+
+	<section class="idea-form box">
+		<h2>Add an idea</h2>
+
+		{result && !result.error ? <p class="form-message">{result.data}</p> : null}
+
+		{
+			result && result.error ? (
+				<p class="form-message error">{result.error}</p>
+			) : null
+		}
+
+		<form method="POST" action={actions.ideas.save}>
+			<label for="text">
+				Idea
+				<input type="text" name="text" id="text" required />
+			</label>
+
+			<fieldset>
+				<legend>Is this idea any good?</legend>
+				<label for="yes">
+					<input type="radio" name="good" id="yes" value="true" />
+					Yes
+				</label>
+				<label for="no">
+					<input type="radio" name="good" id="no" value="false" />
+					No
+				</label>
+			</fieldset>
+
+			<button type="submit">Add</button>
+		</form>
+	</section>
+
+	<section class="idea-lists flex">
+		<div class="box">
+			<h2>Good ideas</h2>
+			<ul class="list">
+				{
+					goodIdeas.map((idea) => (
+						<li class="with-controls">
+							<div>{idea.text}</div>
+							<form method="POST" action={actions.ideas.delete}>
+								<input type="hidden" name="id" value={idea.id} />
+								<button type="submit" class="icon">
+									<span role="img" aria-label="trash can">
+										🗑️
+									</span>
+									<span class="sr-only">delete</span>
+								</button>
+							</form>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+		<div class="box">
+			<h2>Bad ideas</h2>
+			<ul class="list">
+				{
+					badIdeas.map((idea) => (
+						<li class="with-controls">
+							<div>{idea.text}</div>
+							<form method="POST" action={actions.ideas.delete}>
+								<input type="hidden" name="id" value={idea.id} />
+								<button type="submit" class="icon">
+									<span role="img" aria-label="trash can">
+										🗑️
+									</span>
+									<span class="sr-only">delete</span>
+								</button>
+							</form>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+</Layout>

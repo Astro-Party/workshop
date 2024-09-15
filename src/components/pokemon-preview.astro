@@ -1,0 +1,43 @@
+---
+import { Image } from 'astro:assets';
+
+export interface Props {
+	pokemon: string;
+}
+
+const { pokemon } = Astro.props;
+
+const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
+
+if (!response.ok) {
+	throw new Error('failed to fetch Pokémon');
+}
+
+const pokemonData = await response.json();
+---
+
+<a href={`/pokemon/${pokemonData.name}`}>
+	<Image
+		src={pokemonData.sprites.front_default}
+		alt={pokemonData.name}
+		width="50"
+		height="50"
+	/>
+	<span>{pokemonData.name}</span>
+</a>
+
+<style>
+	a {
+		align-items: center;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		text-decoration: none;
+
+		img {
+			block-size: 100px;
+			display: block;
+			inline-size: 100px;
+		}
+	}
+</style>

@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/default.astro';
 import Aside from '../components/aside.astro';
+import { Counter } from '../components/counter.react';
 
 const title = 'Astro Party Workshop';
 ---
@@ -8,6 +9,11 @@ const title = 'Astro Party Workshop';
 <Layout title={title}>
 	<h1>{title}</h1>
 	<p>Isn't this cool?</p>
+
+	<p>
+		Click this button for luck:
+		<Counter client:visible />
+	</p>
 
 	<Aside icon="💡">
 		<p>Don't miss this part!</p>

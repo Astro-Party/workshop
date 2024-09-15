@@ -15,11 +15,6 @@ export async function getStaticPaths() {
 			},
 		};
 	});
-	return [
-		{ params: { slug: '1' }, props: { title: 'Static 1' } },
-		{ params: { slug: '2' }, props: { title: 'Static 2' } },
-		{ params: { slug: '3' }, props: { title: 'Static 3' } },
-	];
 }
 
 export interface Props {
@@ -37,14 +32,17 @@ const { Content } = await holiday.render();
 		{holidays?.map((h) => <a href={`/holidays/${h.slug}`}>{h.data.title}</a>)}
 	</nav>
 
-	<Image
-		src={holiday.data.image}
-		alt={holiday.data.title}
-		width="800"
-		height="500"
-		loading="eager"
-		transition:name={`holiday-img-${holiday.slug}`}
-	/>
+	<figure>
+		<Image
+			src={holiday.data.image.src}
+			alt={holiday.data.image.alt}
+			width="800"
+			height="500"
+			loading="eager"
+			transition:name={`holiday-img-${holiday.slug}`}
+		/>
+		<figcaption>{holiday.data.image.credit}</figcaption>
+	</figure>
 
 	<h1 transition:name={`holiday-title-${holiday.slug}`}>
 		{holiday.data.title}
