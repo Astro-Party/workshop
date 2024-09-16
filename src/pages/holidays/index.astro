@@ -20,9 +20,13 @@ const holidays = await getCollection('holidays');
 							width="800"
 							height="500"
 							transition:name={`holiday-img-${holiday.slug}`}
+							transition:animate="initial"
 						/>
 
-						<h2 transition:name={`holiday-title-${holiday.slug}`}>
+						<h2
+							transition:name={`holiday-title-${holiday.slug}`}
+							transition:animate="initial"
+						>
 							<a href={`/holidays/${holiday.slug}`}>{holiday.data.title}</a>
 						</h2>
 
