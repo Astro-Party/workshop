@@ -2,14 +2,14 @@
 import { actions } from 'astro:actions';
 import { db, Idea } from 'astro:db';
 import Layout from '../layouts/default.astro';
+import IdeaList from '../components/idea-list.astro';
+import Callout from '../components/callout.astro';
 
 export const prerender = false;
 
 const title = 'Astro DB';
 
 const ideas = await db.select().from(Idea);
-const goodIdeas = ideas.filter((idea) => idea.good);
-const badIdeas = ideas.filter((idea) => !idea.good);
 
 const result = Astro.getActionResult(actions.ideas.save);
 ---
@@ -24,11 +24,19 @@ const result = Astro.getActionResult(actions.ideas.save);
 	<section class="idea-form box">
 		<h2>Add an idea</h2>
 
-		{result && !result.error ? <p class="form-message">{result.data}</p> : null}
+		{
+			result && !result.error ? (
+				<Callout icon="✅" iconDescription="green checkbox">
+					<p>{result.data}</p>
+				</Callout>
+			) : null
+		}
 
 		{
 			result && result.error ? (
-				<p class="form-message error">{result.error}</p>
+				<Callout icon="🚨" iconDescription="alarm">
+					<p>{result.error}</p>
+				</Callout>
 			) : null
 		}
 
@@ -55,47 +63,7 @@ const result = Astro.getActionResult(actions.ideas.save);
 	</section>
 
 	<section class="idea-lists flex">
-		<div class="box">
-			<h2>Good ideas</h2>
-			<ul class="list">
-				{
-					goodIdeas.map((idea) => (
-						<li class="with-controls">
-							<div>{idea.text}</div>
-							<form method="POST" action={actions.ideas.delete}>
-								<input type="hidden" name="id" value={idea.id} />
-								<button type="submit" class="icon">
-									<span role="img" aria-label="trash can">
-										🗑️
-									</span>
-									<span class="sr-only">delete</span>
-								</button>
-							</form>
-						</li>
-					))
-				}
-			</ul>
-		</div>
-		<div class="box">
-			<h2>Bad ideas</h2>
-			<ul class="list">
-				{
-					badIdeas.map((idea) => (
-						<li class="with-controls">
-							<div>{idea.text}</div>
-							<form method="POST" action={actions.ideas.delete}>
-								<input type="hidden" name="id" value={idea.id} />
-								<button type="submit" class="icon">
-									<span role="img" aria-label="trash can">
-										🗑️
-									</span>
-									<span class="sr-only">delete</span>
-								</button>
-							</form>
-						</li>
-					))
-				}
-			</ul>
-		</div>
+		<IdeaList title="Good ideas" ideas={ideas.filter((idea) => idea.good)} />
+		<IdeaList title="Bad ideas" ideas={ideas.filter((idea) => !idea.good)} />
 	</section>
 </Layout>

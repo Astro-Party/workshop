@@ -1,22 +1,21 @@
 ---
 export interface Props {
 	icon?: string;
+	iconDescription?: string;
 }
 
-const { icon = '👻' } = Astro.props;
+const { icon = '👻', iconDescription = 'ghost' } = Astro.props;
 ---
 
-<aside>
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
-		><text y=".9em" font-size="90">{icon}</text></svg
-	>
+<div class="callout">
+	<span role="img" aria-label={iconDescription}>{icon}</span>
 	<div class="content">
 		<slot />
 	</div>
-</aside>
+</div>
 
 <style>
-	aside {
+	.callout {
 		align-items: center;
 		background: lightyellow;
 		border: 1px solid #dd0;
@@ -26,9 +25,11 @@ const { icon = '👻' } = Astro.props;
 		margin: 1rem 0;
 		padding: 0.5rem;
 
-		svg {
+		span {
 			display: inline-block;
+			font-size: 1.25rem;
 			inline-size: 1.5rem;
+			line-height: 1;
 		}
 
 		p {

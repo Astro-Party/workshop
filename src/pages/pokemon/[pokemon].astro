@@ -4,6 +4,8 @@ import Layout from '../../layouts/default.astro';
 
 export const prerender = false;
 
+const ITEMS_PER_PAGE = Number(import.meta.env.ITEMS_PER_PAGE);
+
 const { pokemon } = Astro.params;
 
 const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
@@ -17,8 +19,8 @@ const pokemonData = await response.json();
 const backUrl = new URL(Astro.url);
 backUrl.pathname = '/pokemon';
 backUrl.searchParams.set(
-	'offset',
-	(Math.floor(pokemonData.id / 50) * 50).toString(),
+	'page',
+	Math.floor(pokemonData.id / ITEMS_PER_PAGE + 1).toString(),
 );
 
 const title = pokemonData.name;

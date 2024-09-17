@@ -1,13 +1,16 @@
 ---
-import PokemonPreview from '../../components/pokemon-preview.astro';
 import Layout from '../../layouts/default.astro';
+import PokemonPreview from '../../components/pokemon-preview.astro';
 
 export const prerender = false;
 
-const offset = Astro.url.searchParams.get('offset') ?? '0';
+const ITEMS_PER_PAGE = Number(import.meta.env.ITEMS_PER_PAGE);
+
 const apiUrl = new URL('https://pokeapi.co/api/v2/pokemon');
-apiUrl.searchParams.set('limit', '50');
-apiUrl.searchParams.set('offset', offset);
+apiUrl.searchParams.set('limit', ITEMS_PER_PAGE.toString());
+
+const page = Number(Astro.url.searchParams.get('page') ?? 1);
+apiUrl.searchParams.set('offset', ((page - 1) * ITEMS_PER_PAGE).toString());
 
 const response = await fetch(apiUrl);
 
@@ -18,25 +21,15 @@ if (!response.ok) {
 const title = 'Pokémon';
 const pokemonList = await response.json();
 
-const prevOffset =
-	Number(offset) > 0 ? Math.max(Number(offset) - 50, 0) : false;
-const nextOffset =
-	Number(offset) <= pokemonList.count - 1
-		? Math.min(Number(offset) + 50, Math.floor(pokemonList.count / 50) * 50)
-		: false;
+const maxPages = Math.floor(pokemonList.count / ITEMS_PER_PAGE);
 
-let prevUrl;
-let nextUrl;
+const prevPage = page > 1 ? Math.max(page - 1, 1) : false;
+const prevUrl = new URL(Astro.url);
+prevUrl.searchParams.set('page', prevPage.toString());
 
-if (prevOffset !== false) {
-	prevUrl = new URL(Astro.url);
-	prevUrl.searchParams.set('offset', prevOffset.toString());
-}
-
-if (nextOffset !== false) {
-	nextUrl = new URL(Astro.url);
-	nextUrl.searchParams.set('offset', nextOffset.toString());
-}
+const nextPage = page < maxPages ? Math.min(page + 1, maxPages) : false;
+const nextUrl = new URL(Astro.url);
+nextUrl.searchParams.set('page', nextPage.toString());
 ---
 
 <Layout title={title}>
@@ -63,8 +56,8 @@ if (nextOffset !== false) {
 
 	<section>
 		<nav class="subnav flex">
-			{prevOffset !== false ? <a href={prevUrl}>&larr; previous page</a> : null}
-			{nextOffset !== false ? <a href={nextUrl}>next page &rarr;</a> : null}
+			{prevPage !== false ? <a href={prevUrl}>&larr; previous page</a> : null}
+			{nextPage !== false ? <a href={nextUrl}>next page &rarr;</a> : null}
 		</nav>
 	</section>
 </Layout>

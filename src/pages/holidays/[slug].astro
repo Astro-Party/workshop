@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/default.astro';
 
 export async function getStaticPaths() {
@@ -15,11 +15,6 @@ export async function getStaticPaths() {
 			},
 		};
 	});
-}
-
-export interface Props {
-	holiday: CollectionEntry<'holidays'>;
-	holidays: Array<CollectionEntry<'holidays'>>;
 }
 
 const { holiday, holidays } = Astro.props;
